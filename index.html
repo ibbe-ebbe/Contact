@@ -11,6 +11,9 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   background: #f0f4f8;
   color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* Header */
@@ -124,8 +127,8 @@ header input::placeholder {
 }
 
 .guesthouse { color: #0EC3AE; } /* teal shade */
-.room { color: #0da291; }        /* darker shade */
-.vehicle { color: #0ba796; }     /* slightly darker shade */
+.room { color: #0da291; }        
+.vehicle { color: #0ba796; }
 
 .arrow {
   font-size: 16px;
@@ -194,6 +197,16 @@ header input::placeholder {
   background: #0da291; /* darker shade for hover */
 }
 
+/* Footer */
+footer {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8; /* very light gray */
+  padding: 12px 0;
+  margin-top: auto;
+}
+
+/* Responsive container */
 @media (min-width: 768px) {
   body {
     max-width: 650px;
@@ -214,6 +227,8 @@ header input::placeholder {
 </header>
 
 <div id="list">Loading…</div>
+
+<footer>eehaab.com</footer>
 
 <script>
 const SHEET_ID = "1prn2K23XHjv_z7l0VG_Iy762c-O4HsklbaEbFye2Ly0";

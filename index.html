@@ -60,6 +60,24 @@
     color: #475569;
   }
 
+  .guesthouse {
+    font-size: 13px;
+    color: #2563eb;
+    margin-top: 4px;
+  }
+
+  .room {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+  }
+
+  .vehicle {
+    font-size: 12px;
+    color: #dc2626;
+    margin-top: 2px;
+  }
+
   .arrow {
     font-size: 16px;
     color: #64748b;
@@ -108,7 +126,7 @@
 
 <header>
   <h1>Invitee Contact Book</h1>
-  <input id="search" placeholder="Search invitee or contact…">
+  <input id="search" placeholder="Search invitee, guesthouse, room, vehicle, or contact…">
 </header>
 
 <div id="list">Loading…</div>
@@ -129,6 +147,9 @@ fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&s
       first: r.c[1]?.v || "",
       last: r.c[2]?.v || "",
       designation: r.c[3]?.v || "",
+      guesthouse: r.c[10]?.v || "",
+      room: r.c[11]?.v || "",
+      vehicle: r.c[12]?.v || "",
       focals: [
         { name: r.c[4]?.v, phone: r.c[5]?.v },
         { name: r.c[6]?.v, phone: r.c[7]?.v },
@@ -162,6 +183,9 @@ function render(data) {
           <div>
             <div class="name">${inv.first} ${inv.last}</div>
             <div class="designation">${inv.designation}</div>
+            <div class="guesthouse">🏨 ${inv.guesthouse}</div>
+            <div class="room">🚪 Room: ${inv.room}</div>
+            <div class="vehicle">🚗 Vehicle: ${inv.vehicle}</div>
           </div>
           <div class="arrow">⌄</div>
         </div>

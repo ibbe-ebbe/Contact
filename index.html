@@ -3,137 +3,134 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Invitee Phone Book</title>
+<title>Invitee Phone Book - PNC Style</title>
 
 <style>
-  /* Base & font */
+/* Base */
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #f0f4f8;
+  color: #1e293b;
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  background: #0f172a; /* PNC dark blue */
+  padding: 16px 12px;
+  color: white;
+  z-index: 10;
+}
+
+header h1 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+header input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: none;
+  background: #1e293b; /* darker input */
+  color: #ffffff;
+}
+
+header input::placeholder {
+  color: #cbd5e1;
+}
+
+/* Invitee card */
+.invitee {
+  margin: 8px 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+  transition: transform 0.1s;
+}
+
+.invitee:hover {
+  transform: translateY(-2px);
+}
+
+.invitee-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 16px;
+  color: #0f172a;
+}
+
+.designation {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.guesthouse, .room, .vehicle {
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.guesthouse { color: #1e40af; } /* blue */
+.room { color: #475569; }        /* gray */
+.vehicle { color: #b91c1c; }     /* red */
+
+/* Arrow */
+.arrow {
+  font-size: 16px;
+  color: #475569;
+  transition: transform .2s;
+}
+
+.invitee.open .arrow {
+  transform: rotate(180deg);
+}
+
+/* Focals */
+.focals {
+  display: none;
+  padding: 0 16px 12px 16px;
+  background: #f0f4f8;
+}
+
+.invitee.open .focals {
+  display: block;
+}
+
+.focal {
+  padding: 10px 0;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.focal-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.focal-phone a {
+  font-size: 13px;
+  color: #FFD500; /* PNC yellow */
+  text-decoration: none;
+}
+
+@media (min-width: 768px) {
   body {
-    margin: 0;
-    font-family: "Inter", system-ui, sans-serif;
-    background: #f9fafb; /* light grey background like pnc.mv */
-    color: #1e293b; /* dark blue/gray text */
+    max-width: 650px;
+    margin: auto;
   }
-
-  /* Header */
-  header {
-    position: sticky;
-    top: 0;
-    background: #ffffff;
-    padding: 16px 12px 12px 12px;
-    border-bottom: 2px solid #0f172a; /* dark border */
-    z-index: 10;
-  }
-
-  header h1 {
-    margin: 0 0 8px;
-    font-size: 20px;
-    font-weight: 600;
-    color: #0f172a; /* deep blue */
-  }
-
-  input {
-    width: 100%;
-    padding: 10px 12px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1px solid #cbd5e1;
-    background: #f1f5f9;
-    color: #1e293b;
-  }
-
-  /* Invitee Card */
-  .invitee {
-    margin: 6px 0;
-    border-radius: 8px;
-    background: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    overflow: hidden;
-  }
-
-  .invitee-header {
-    padding: 14px 16px;
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-  }
-
-  .invitee-header:active {
-    background: #f1f5f9;
-  }
-
-  .name {
-    font-weight: 600;
-    font-size: 16px;
-    color: #0f172a;
-  }
-
-  .designation {
-    font-size: 14px;
-    color: #475569;
-    margin-top: 2px;
-  }
-
-  .guesthouse, .room, .vehicle {
-    font-size: 13px;
-    margin-top: 2px;
-  }
-
-  .guesthouse {
-    color: #1e40af; /* deep blue */
-  }
-
-  .room {
-    color: #64748b; /* grayish */
-  }
-
-  .vehicle {
-    color: #b91c1c; /* red accent for vehicle */
-  }
-
-  .arrow {
-    font-size: 16px;
-    color: #475569;
-    transition: transform .2s;
-  }
-
-  .invitee.open .arrow {
-    transform: rotate(180deg);
-  }
-
-  .focals {
-    display: none;
-    padding: 0 16px 12px 16px;
-    background: #f8fafc;
-  }
-
-  .invitee.open .focals {
-    display: block;
-  }
-
-  .focal {
-    padding: 10px 0;
-    border-top: 1px dashed #e2e8f0;
-  }
-
-  .focal-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: #0f172a;
-  }
-
-  .focal-phone a {
-    font-size: 13px;
-    color: #1e40af;
-    text-decoration: none;
-  }
-
-  /* Mobile */
-  @media (min-width: 768px) {
-    body {
-      max-width: 650px;
-      margin: auto;
-    }
-  }
+}
 </style>
 </head>
 

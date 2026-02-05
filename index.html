@@ -6,81 +6,93 @@
 <title>Invitee Phone Book</title>
 
 <style>
+  /* Base & font */
   body {
     margin: 0;
-    font-family: system-ui, sans-serif;
-    background: #f8fafc;
-    color: #0f172a;
+    font-family: "Inter", system-ui, sans-serif;
+    background: #f9fafb; /* light grey background like pnc.mv */
+    color: #1e293b; /* dark blue/gray text */
   }
 
+  /* Header */
   header {
     position: sticky;
     top: 0;
     background: #ffffff;
-    padding: 12px;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 12px 12px 12px;
+    border-bottom: 2px solid #0f172a; /* dark border */
     z-index: 10;
   }
 
-  h1 {
+  header h1 {
     margin: 0 0 8px;
-    font-size: 18px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #0f172a; /* deep blue */
   }
 
   input {
     width: 100%;
-    padding: 10px;
-    font-size: 14px;
+    padding: 10px 12px;
+    font-size: 15px;
     border-radius: 8px;
     border: 1px solid #cbd5e1;
+    background: #f1f5f9;
+    color: #1e293b;
   }
 
+  /* Invitee Card */
   .invitee {
-    border-bottom: 1px solid #e5e7eb;
+    margin: 6px 0;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
   }
 
   .invitee-header {
-    padding: 14px;
+    padding: 14px 16px;
     display: flex;
     justify-content: space-between;
     cursor: pointer;
   }
 
   .invitee-header:active {
-    background: #e5e7eb;
+    background: #f1f5f9;
   }
 
   .name {
     font-weight: 600;
     font-size: 16px;
+    color: #0f172a;
   }
 
   .designation {
-    font-size: 13px;
+    font-size: 14px;
     color: #475569;
+    margin-top: 2px;
+  }
+
+  .guesthouse, .room, .vehicle {
+    font-size: 13px;
+    margin-top: 2px;
   }
 
   .guesthouse {
-    font-size: 13px;
-    color: #2563eb;
-    margin-top: 4px;
+    color: #1e40af; /* deep blue */
   }
 
   .room {
-    font-size: 12px;
-    color: #64748b;
-    margin-top: 2px;
+    color: #64748b; /* grayish */
   }
 
   .vehicle {
-    font-size: 12px;
-    color: #dc2626;
-    margin-top: 2px;
+    color: #b91c1c; /* red accent for vehicle */
   }
 
   .arrow {
     font-size: 16px;
-    color: #64748b;
+    color: #475569;
     transition: transform .2s;
   }
 
@@ -90,7 +102,8 @@
 
   .focals {
     display: none;
-    padding: 0 14px 10px;
+    padding: 0 16px 12px 16px;
+    background: #f8fafc;
   }
 
   .invitee.open .focals {
@@ -99,20 +112,22 @@
 
   .focal {
     padding: 10px 0;
-    border-top: 1px dashed #e5e7eb;
+    border-top: 1px dashed #e2e8f0;
   }
 
   .focal-name {
     font-size: 14px;
     font-weight: 500;
+    color: #0f172a;
   }
 
   .focal-phone a {
     font-size: 13px;
-    color: #2563eb;
+    color: #1e40af;
     text-decoration: none;
   }
 
+  /* Mobile */
   @media (min-width: 768px) {
     body {
       max-width: 650px;
@@ -164,7 +179,7 @@ function render(data) {
   const list = document.getElementById("list");
   list.innerHTML = "";
 
-  data.forEach((inv, i) => {
+  data.forEach(inv => {
     let focalsHTML = "";
     inv.focals.forEach(f => {
       focalsHTML += `

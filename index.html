@@ -2,74 +2,91 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Styled Sheet Data</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact Directory</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
   body {
-    font-family: Inter, Arial, sans-serif;
+    font-family: Inter, system-ui, sans-serif;
     background: #0f172a;
     color: #e5e7eb;
-    padding: 20px;
+    margin: 0;
+    padding: 14px;
+  }
+
+  header {
+    position: sticky;
+    top: 0;
+    background: #020617;
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 12px;
   }
 
   h1 {
-    margin-bottom: 16px;
-    font-size: 22px;
+    font-size: 18px;
+    margin: 0 0 8px;
   }
 
-  table {
+  input {
     width: 100%;
-    border-collapse: collapse;
-    background: #020617;
+    padding: 10px 12px;
     border-radius: 10px;
-    overflow: hidden;
-  }
-
-  thead {
+    border: none;
     background: #020617;
-  }
-
-  th {
-    text-align: left;
-    padding: 12px;
-    font-size: 13px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #94a3b8;
-    border-bottom: 1px solid #1e293b;
-  }
-
-  td {
-    padding: 12px;
-    border-bottom: 1px solid #1e293b;
+    color: #e5e7eb;
     font-size: 14px;
   }
 
-  tr:hover {
+  input::placeholder {
+    color: #64748b;
+  }
+
+  .card {
     background: #020617;
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.35);
   }
 
-  .badge {
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
+  .name {
     font-weight: 600;
-    display: inline-block;
+    font-size: 16px;
   }
 
-  .active {
-    background: #064e3b;
-    color: #6ee7b7;
+  .role {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 10px;
   }
 
-  .closed {
-    background: #7f1d1d;
-    color: #fecaca;
+  .actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
   }
 
-  @media (max-width: 768px) {
-    table {
-      font-size: 12px;
+  .btn {
+    flex: 1;
+    text-align: center;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 13px;
+    text-decoration: none;
+    color: white;
+  }
+
+  .call { background: #059669; }
+  .whatsapp { background: #16a34a; }
+  .email { background: #2563eb; }
+
+  @media (min-width: 768px) {
+    body {
+      max-width: 520px;
+      margin: auto;
     }
   }
 </style>
@@ -77,45 +94,61 @@
 
 <body>
 
-<h1>📊 Google Sheet Data</h1>
-<div id="table-container">Loading…</div>
+<header>
+  <h1>📒 Contact Book</h1>
+  <input type="text" id="search" placeholder="Search name, department, phone…">
+</header>
+
+<div id="contacts">Loading…</div>
 
 <script>
 const sheetID = "1prn2K23XHjv_z7l0VG_Iy762c-O4HsklbaEbFye2Ly0";
-const sheetName = "Sheet1"; // change if needed
+const sheetName = "Sheet1";
+
+let allContacts = [];
 
 fetch(`https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`)
   .then(res => res.text())
   .then(text => {
     const json = JSON.parse(text.substring(47).slice(0, -2));
-    const cols = json.table.cols.map(c => c.label);
+    const cols = json.table.cols.map(c => c.label.toLowerCase());
     const rows = json.table.rows;
 
-    let html = "<table><thead><tr>";
-    cols.forEach(col => html += `<th>${col}</th>`);
-    html += "</tr></thead><tbody>";
-
-    rows.forEach(r => {
-      html += "<tr>";
-      r.c.forEach(cell => {
-        let value = cell ? cell.v : "";
-
-        // example: status badge
-        if (typeof value === "string" && value.toLowerCase() === "active") {
-          value = `<span class="badge active">Active</span>`;
-        }
-        if (typeof value === "string" && value.toLowerCase() === "closed") {
-          value = `<span class="badge closed">Closed</span>`;
-        }
-
-        html += `<td>${value}</td>`;
-      });
-      html += "</tr>";
+    allContacts = rows.map(r => {
+      let obj = {};
+      r.c.forEach((cell, i) => obj[cols[i]] = cell ? cell.v : "");
+      return obj;
     });
 
-    html += "</tbody></table>";
-    document.getElementById("table-container").innerHTML = html;
+    render(allContacts);
   });
+
+function render(data) {
+  const container = document.getElementById("contacts");
+  container.innerHTML = "";
+
+  data.forEach(c => {
+    container.innerHTML += `
+      <div class="card">
+        <div class="name">${c.name || ""}</div>
+        <div class="role">${c.designation || c.department || ""}</div>
+        <div class="actions">
+          ${c.phone ? `<a class="btn call" href="tel:${c.phone}">Call</a>` : ""}
+          ${c.whatsapp ? `<a class="btn whatsapp" href="https://wa.me/${c.whatsapp}">WhatsApp</a>` : ""}
+          ${c.email ? `<a class="btn email" href="mailto:${c.email}">Email</a>` : ""}
+        </div>
+      </div>
+    `;
+  });
+}
+
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  const filtered = allContacts.filter(c =>
+    Object.values(c).join(" ").toLowerCase().includes(q)
+  );
+  render(filtered);
+});
 </script>
 
 </body>

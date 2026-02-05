@@ -21,16 +21,42 @@ header {
   padding: 16px 12px;
   color: white;
   z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
 }
 
 header h1 {
-  margin: 0 0 8px;
+  margin: 0;
   font-size: 20px;
   font-weight: 700;
 }
 
+/* Buttons container */
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.header-buttons a {
+  background: #1e40af;
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.header-buttons a:hover {
+  background: #1e3a8a;
+}
+
 header input {
   width: 100%;
+  max-width: 500px;
   padding: 10px 12px;
   font-size: 15px;
   border-radius: 8px;
@@ -65,9 +91,9 @@ header input::placeholder {
 }
 
 .invitee-photo {
-  width: 120px;  /* large photo */
+  width: 120px;
   height: 120px;
-  border-radius: 12px; 
+  border-radius: 12px;
   object-fit: cover;
   margin-right: 16px;
   flex-shrink: 0;
@@ -178,6 +204,10 @@ header input::placeholder {
 <header>
   <h1>Invitee Contact Book</h1>
   <input id="search" placeholder="Search invitee, guesthouse, room, vehicle, or contact…">
+  <div class="header-buttons">
+    <a href="#" target="_blank">Event Travel</a>
+    <a href="#" target="_blank">Event Agenda</a>
+  </div>
 </header>
 
 <div id="list">Loading…</div>

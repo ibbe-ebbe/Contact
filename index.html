@@ -3,89 +3,109 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Contact Directory</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<title>Invitee Phone Book</title>
 
 <style>
   body {
-    font-family: Inter, system-ui, sans-serif;
-    background: #0f172a;
-    color: #e5e7eb;
     margin: 0;
-    padding: 14px;
+    font-family: system-ui, sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
   }
 
   header {
     position: sticky;
     top: 0;
-    background: #020617;
+    background: #ffffff;
     padding: 12px;
-    border-radius: 12px;
-    margin-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    z-index: 10;
   }
 
-  h1 {
-    font-size: 18px;
+  header h1 {
     margin: 0 0 8px;
+    font-size: 18px;
   }
 
   input {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: none;
-    background: #020617;
-    color: #e5e7eb;
+    padding: 10px;
     font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
   }
 
-  input::placeholder {
-    color: #64748b;
+  .invitee {
+    border-bottom: 1px solid #e5e7eb;
   }
 
-  .card {
-    background: #020617;
-    border-radius: 14px;
+  .invitee-header {
     padding: 14px;
-    margin-bottom: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,.35);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .name {
+  .invitee-header:active {
+    background: #e5e7eb;
+  }
+
+  .invitee-name {
     font-weight: 600;
     font-size: 16px;
   }
 
-  .role {
+  .designation {
     font-size: 13px;
-    color: #94a3b8;
-    margin-bottom: 10px;
+    color: #475569;
   }
 
-  .actions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+  .arrow {
+    font-size: 16px;
+    color: #64748b;
+    transition: transform .2s;
   }
 
-  .btn {
-    flex: 1;
-    text-align: center;
-    padding: 8px;
-    border-radius: 10px;
+  .invitee.open .arrow {
+    transform: rotate(180deg);
+  }
+
+  .focals {
+    display: none;
+    padding: 0 14px 10px;
+  }
+
+  .invitee.open .focals {
+    display: block;
+  }
+
+  .focal {
+    padding: 10px 0;
+    border-top: 1px dashed #e5e7eb;
+  }
+
+  .focal-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .focal-role {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 6px;
+  }
+
+  .actions a {
     font-size: 13px;
+    margin-right: 12px;
     text-decoration: none;
-    color: white;
+    color: #2563eb;
   }
-
-  .call { background: #059669; }
-  .whatsapp { background: #16a34a; }
-  .email { background: #2563eb; }
 
   @media (min-width: 768px) {
     body {
-      max-width: 520px;
+      max-width: 650px;
       margin: auto;
     }
   }
@@ -95,59 +115,101 @@
 <body>
 
 <header>
-  <h1>📒 Contact Book</h1>
-  <input type="text" id="search" placeholder="Search name, department, phone…">
+  <h1>Invitee Contact Book</h1>
+  <input id="search" placeholder="Search invitee or focal…">
 </header>
 
-<div id="contacts">Loading…</div>
+<div id="list">Loading…</div>
 
 <script>
-const sheetID = "1prn2K23XHjv_z7l0VG_Iy762c-O4HsklbaEbFye2Ly0";
-const sheetName = "Sheet1";
+const SHEET_ID = "1prn2K23XHjv_z7l0VG_Iy762c-O4HsklbaEbFye2Ly0";
+const SHEET_NAME = "Sheet1";
 
-let allContacts = [];
+let invitees = {};
 
-fetch(`https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`)
+fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`)
   .then(res => res.text())
   .then(text => {
     const json = JSON.parse(text.substring(47).slice(0, -2));
     const cols = json.table.cols.map(c => c.label.toLowerCase());
-    const rows = json.table.rows;
 
-    allContacts = rows.map(r => {
-      let obj = {};
-      r.c.forEach((cell, i) => obj[cols[i]] = cell ? cell.v : "");
-      return obj;
+    json.table.rows.forEach(r => {
+      let row = {};
+      r.c.forEach((cell, i) => row[cols[i]] = cell ? cell.v : "");
+
+      const key = row.inviteefirst + " " + row.inviteelast;
+
+      if (!invitees[key]) {
+        invitees[key] = {
+          name: key,
+          designation: row.designation,
+          focals: []
+        };
+      }
+
+      invitees[key].focals.push({
+        name: row.focalname,
+        role: row.focalrole,
+        phone: row.phone,
+        whatsapp: row.whatsapp,
+        email: row.email
+      });
     });
 
-    render(allContacts);
+    render(Object.values(invitees));
   });
 
 function render(data) {
-  const container = document.getElementById("contacts");
-  container.innerHTML = "";
+  const list = document.getElementById("list");
+  list.innerHTML = "";
 
-  data.forEach(c => {
-    container.innerHTML += `
-      <div class="card">
-        <div class="name">${c.name || ""}</div>
-        <div class="role">${c.designation || c.department || ""}</div>
-        <div class="actions">
-          ${c.phone ? `<a class="btn call" href="tel:${c.phone}">Call</a>` : ""}
-          ${c.whatsapp ? `<a class="btn whatsapp" href="https://wa.me/${c.whatsapp}">WhatsApp</a>` : ""}
-          ${c.email ? `<a class="btn email" href="mailto:${c.email}">Email</a>` : ""}
+  data.forEach((inv, i) => {
+    let focalsHTML = "";
+    inv.focals.forEach(f => {
+      focalsHTML += `
+        <div class="focal">
+          <div class="focal-name">${f.name}</div>
+          <div class="focal-role">${f.role || ""}</div>
+          <div class="actions">
+            ${f.phone ? `<a href="tel:${f.phone}">Call</a>` : ""}
+            ${f.whatsapp ? `<a href="https://wa.me/${f.whatsapp}">WhatsApp</a>` : ""}
+            ${f.email ? `<a href="mailto:${f.email}">Email</a>` : ""}
+          </div>
         </div>
+      `;
+    });
+
+    list.innerHTML += `
+      <div class="invitee" data-index="${i}">
+        <div class="invitee-header" onclick="toggle(${i})">
+          <div>
+            <div class="invitee-name">${inv.name}</div>
+            <div class="designation">${inv.designation || ""}</div>
+          </div>
+          <div class="arrow">⌄</div>
+        </div>
+        <div class="focals">${focalsHTML}</div>
       </div>
     `;
   });
 }
 
+function toggle(i) {
+  document
+    .querySelectorAll(".invitee")
+    .forEach((el, idx) => idx === i
+      ? el.classList.toggle("open")
+      : el.classList.remove("open")
+    );
+}
+
 document.getElementById("search").addEventListener("input", e => {
   const q = e.target.value.toLowerCase();
-  const filtered = allContacts.filter(c =>
-    Object.values(c).join(" ").toLowerCase().includes(q)
+  render(
+    Object.values(invitees).filter(inv =>
+      JSON.stringify(inv).toLowerCase().includes(q)
+    )
   );
-  render(filtered);
 });
 </script>
 

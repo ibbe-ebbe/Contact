@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PNC- Kulhudhuffushi</title>
+<title>Invitee Phone Book - Teal Shades</title>
 
 <style>
 body {
@@ -17,7 +17,7 @@ body {
 header {
   position: sticky;
   top: 0;
-  background: #12C9B7; /* top banner color */
+  background: #12C9B7; /* base teal */
   padding: 16px 12px;
   color: white;
   z-index: 10;
@@ -42,7 +42,7 @@ header h1 {
 }
 
 .header-buttons a {
-  background: #12C9B7;
+  background: #14D1C0; /* lighter shade */
   color: #fff;
   text-decoration: none;
   padding: 8px 12px;
@@ -52,9 +52,10 @@ header h1 {
 }
 
 .header-buttons a:hover {
-  background: #0fa998; /* slightly darker shade on hover */
+  background: #0fa998; /* darkest shade for hover */
 }
 
+/* Search box */
 header input {
   width: 100%;
   max-width: 500px;
@@ -62,7 +63,7 @@ header input {
   font-size: 15px;
   border-radius: 8px;
   border: none;
-  background: #12C9B7;
+  background: #10B3A2; /* slightly darker than header */
   color: #fff;
 }
 
@@ -122,9 +123,9 @@ header input::placeholder {
   margin-top: 2px;
 }
 
-.guesthouse { color: #12C9B7; }
-.room { color: #475569; }
-.vehicle { color: #0f7c70; }
+.guesthouse { color: #0EC3AE; } /* teal shade */
+.room { color: #0da291; }        /* darker shade */
+.vehicle { color: #0ba796; }     /* slightly darker shade */
 
 .arrow {
   font-size: 16px;
@@ -174,12 +175,12 @@ header input::placeholder {
 
 .focal-phone {
   font-size: 13px;
-  color: #12C9B7; /* phone number color matches theme */
+  color: #0ba796; /* teal shade for phone number */
   margin-top: 2px;
 }
 
 .call-button {
-  background: #12C9B7;
+  background: #0FC9B7; /* lighter teal */
   color: #fff;
   padding: 6px 12px;
   border-radius: 8px;
@@ -190,7 +191,7 @@ header input::placeholder {
 }
 
 .call-button:hover {
-  background: #0fa998; /* slightly darker shade */
+  background: #0da291; /* darker shade for hover */
 }
 
 @media (min-width: 768px) {
@@ -204,10 +205,10 @@ header input::placeholder {
 <body>
 
 <header>
-  <h1>Kulhudhuffushi City - Local Council & WDC Candidates Inauguration</h1>
+  <h1>Invitee Contact Book</h1>
   <input id="search" placeholder="Search invitee, guesthouse, room, vehicle, or contact…">
   <div class="header-buttons">
-    <a href="#" target="_blank">Travel Info</a>
+    <a href="#" target="_blank">Event Travel</a>
     <a href="#" target="_blank">Event Agenda</a>
   </div>
 </header>
@@ -304,4 +305,3 @@ document.getElementById("search").addEventListener("input", e => {
 
 </body>
 </html>
-

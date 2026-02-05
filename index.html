@@ -209,13 +209,13 @@ function render(data) {
       `;
     });
 
-    // photo path based on hidden id
-    const photoSrc = `photos/${inv.id}.png`; // folder "photos" in your repo
+    // photo path in same folder as index.html
+    const photoSrc = `${inv.id}.png`;
 
     list.innerHTML += `
       <div class="invitee">
         <div class="invitee-header" onclick="toggle(this)">
-          <img src="${photoSrc}" class="invitee-photo" onerror="this.src='photos/default.png'"/>
+          <img src="${photoSrc}" class="invitee-photo" onerror="this.src='default.png'"/>
           <div class="invitee-info">
             <div class="name">${inv.first} ${inv.last}</div>
             <div class="designation">${inv.designation}</div>

@@ -1,1 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PNC - Kulhudhuffushi City</title>
 
+<style>
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  background: #f0f4f8;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  background: #12C9B7; /* base teal */
+  padding: 16px 12px;
+  color: white;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Buttons container */
+.header-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.header-buttons a {
+  background: #14D1C0; /* lighter shade */
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.header-buttons a:hover {
+  background: #0fa998; /* darkest shade for hover */
+}
+
+/* Search box */
+header input {
+  width: 100%;
+  max-width: 500px;
+  padding: 10px 12px;
+  font-size: 15px;
+  border-radius: 8px;
+  border: none;
+  background: #10B3A2; /* slightly darker than header */
+  color: #fff;
+}
+
+header input::placeholder {
+  color: #e0f5f2;
+}
+
+/* Invitee card */
+.invitee {
+  margin: 8px 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  overflow: hidden;
+  transition: transform 0.1s;
+}
+
+.invitee:hover {
+  transform: translateY(-2px);
+}
+
+.invitee-header {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.invitee-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-right: 16px;
+  flex-shrink: 0;
+  background: #e2e8f0;
+}
+
+.invitee-info {
+  flex: 1;
+}
+
+.name {
+  font-weight: 600;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.designation {
+  font-size: 14px;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.guesthouse, .room, .vehicle {
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.guesthouse { color: #0EC3AE; } /* teal shade */
+.room { color: #0da291; }        
+.vehicle { color: #0ba796; }
+
+.arrow {
+  font-size: 16px;
+  color: #475569;
+  transition: transform .2s;
+}
+
+.invitee.open .arrow {
+  transform: rotate(180deg);
+}
+
+/* Focals */
+.focals {
+  display: none;
+  padding: 0 16px 12px 16px;
+  background: #f0f4f8;
+}
+
+.invitee.open .focals {
+  display: block;
+}
+
+.focal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px dashed #cbd5e1;
+}
+
+.focal-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.focal-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.focal-designation {
+  font-size: 13px;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.focal-phone {
+  font-size: 13px;
+  color: #0ba796; /* teal shade for phone number */
+  margin-top: 2px;
+}
+
+.call-button {
+  background: #0FC9B7; /* lighter teal */
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.call-button:hover {
+  background: #0da291; /* darker shade for hover */
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  font-size: 12px;
+  color: #94a3b8; /* very light gray */
+  padding: 12px 0;
+  margin-top: auto;
+}
+
+/* Responsive container */
+@media (min-width: 768px) {
+  body {
+    max-width: 650px;
+    margin: auto;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Welcome to Kulhudhuffushi City</h1>
+  <input id="search" placeholder="Search invitee, guesthouse, room, vehicle, or contact…">
+  <div class="header-buttons">
+    <a href="https://drive.google.com/file/d/1825kF0ZrkJ0G2azYWCTKYbLP5Yzx0ED0/view?usp=sharing">Travel Info</a>
+    <a href="https://drive.google.com/file/d/1aUslYqXwVT_29GqspD4v5BicWrVSW7QT/view?usp=sharing">Event Agenda</a>
+  </div>
+</header>
+
+<div id="list">Loading…</div>
+
+<script>
+const SHEET_ID = "1prn2K23XHjv_z7l0VG_Iy762c-O4HsklbaEbFye2Ly0";
+const SHEET_NAME = "Sheet1";
+
+let invitees = [];
+
+fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_NAME}`)
+  .then(res => res.text())
+  .then(text => {
+    const json = JSON.parse(text.substring(47).slice(0, -2));
+    const rows = json.table.rows;
+
+    invitees = rows.map(r => ({
+      id: r.c[0]?.v || "",
+      first: r.c[1]?.v || "",
+      last: r.c[2]?.v || "",
+      designation: r.c[3]?.v || "",
+      guesthouse: r.c[10]?.v || "",
+      room: r.c[11]?.v || "",
+      vehicle: r.c[12]?.v || "",
+      focals: [
+        { name: r.c[4]?.v, phone: r.c[5]?.v, designation: r.c[13]?.v },
+        { name: r.c[6]?.v, phone: r.c[7]?.v, designation: r.c[14]?.v },
+        { name: r.c[8]?.v, phone: r.c[9]?.v, designation: r.c[15]?.v }
+      ].filter(f => f.name && f.phone)
+    }));
+
+    render(invitees);
+  });
+
+function render(data) {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+
+  data.forEach(inv => {
+    let focalsHTML = "";
+    inv.focals.forEach(f => {
+      focalsHTML += `
+        <div class="focal">
+          <div class="focal-info">
+            <div class="focal-name">${f.name}</div>
+            <div class="focal-designation">${f.designation}</div>
+            <div class="focal-phone">${f.phone}</div>
+          </div>
+          <a class="call-button" href="tel:${f.phone}">Call</a>
+        </div>
+      `;
+    });
+
+    const photoSrc = `${inv.id}.png`;
+
+    list.innerHTML += `
+      <div class="invitee">
+        <div class="invitee-header" onclick="toggle(this)">
+          <img src="${photoSrc}" class="invitee-photo" onerror="this.src='default.png'"/>
+          <div class="invitee-info">
+            <div class="name">${inv.first} ${inv.last}</div>
+            <div class="designation">${inv.designation}</div>
+            <div class="guesthouse">🏨 ${inv.guesthouse}</div>
+            <div class="room">🚪 Room: ${inv.room}</div>
+            <div class="vehicle">🚗 Vehicle: ${inv.vehicle}</div>
+          </div>
+          <div class="arrow">⌄</div>
+        </div>
+        <div class="focals">${focalsHTML}</div>
+      </div>
+    `;
+  });
+}
+
+function toggle(el) {
+  const parent = el.parentElement;
+  document.querySelectorAll(".invitee").forEach(i => {
+    if (i !== parent) i.classList.remove("open");
+  });
+  parent.classList.toggle("open");
+}
+
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  render(
+    invitees.filter(i =>
+      JSON.stringify(i).toLowerCase().includes(q)
+    )
+  );
+});
+</script>
+
+</body>
+</html>
